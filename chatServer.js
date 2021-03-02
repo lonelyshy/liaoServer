@@ -1,5 +1,6 @@
 
-var app = require('express')();
+const express = require('express')
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http, { cors: true });
 var utils = require('./utils')
@@ -7,6 +8,10 @@ var utils = require('./utils')
 var Room = require('./Room.js')//导入房间类
 var room = new Room()//实例化
 var User = require('./User.js')
+app.use('/userIcon',express.static(__dirname + '/userIcon'),(req, res, next)=>{//设置静态文件路径，返回图片的路径，设置response的响应透为image/png
+  res.header('Content-Type',"image/png")
+  next()
+})
 app.all('*', function(req, res, next) {  //解决http跨域 并没有解决socket io 跨域
   res.header("Access-Control-Allow-Origin", "*");  
   res.header("Access-Control-Allow-Headers", "X-Requested-With");  
@@ -15,6 +20,7 @@ app.all('*', function(req, res, next) {  //解决http跨域 并没有解决socke
   res.header("Content-Type", "application/json;charset=utf-8");  
   next();  
 }); 
+
 app.get('/', function(req, res){// 监听 默认路径
   res.send('test');
 });
@@ -63,9 +69,9 @@ io.on('connection', function(socket){
   socket.on('sendMessageServer',(data)=>{//有新消息  
     utils.emit(socket,curRoomName,'sendMessageClient',{socketId:socket.id,msg:data})
   })
-  socket.on('addNewUserServer',async (user)=>{//
+  socket.on('addNewUserServer',async (user)=>{//有新用户加入
     //如果存在 那么就 命名重复怎么办？暂时名字后面加个数字
-    users.setUserName(socket.id,user.userName)
+    users.setUserName(socket.id,user.userName)//设置用户名和socketId绑定
     //获取当前房间的用户名列表
     let curRoomUserList = await utils.getRoomUserList(io,curRoomName,users.getUserMap())
     console.log(curRoomName,curRoomUserList)
