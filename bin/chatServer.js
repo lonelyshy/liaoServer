@@ -1,0 +1,41 @@
+
+const formidable = require('formidable')//上传文件处理模块
+let {app,room} = require('../app.js')
+let http = require('http').Server(app);
+let io = require('socket.io')(http, { cors: true });
+let utils = require('../utils/utils.js')
+let User = require('../class/User.js')
+const users = new User() //用户列表 socketid对应名字
+io.on('connection', function(socket){
+  const curRoomName = socket.request._query.roomName
+  socket.join(curRoomName,()=>{//加入房间
+    console.log("joinRoom",socket.id,socket.rooms)
+  })
+  socket.on('sendMessageServer',(data)=>{//有新消息  
+    utils.emit(socket,curRoomName,'sendMessageClient',{socketId:socket.id,msg:data})
+  })
+  socket.on('addNewUserServer',async (user)=>{//有新用户加入
+    //如果存在 那么就 命名重复怎么办？暂时名字后面加个数字
+    users.setUserName(socket.id,user.userName)//设置用户名和socketId绑定
+    //获取当前房间的用户名列表
+    let curRoomUserList = await utils.getRoomUserList(io,curRoomName,users.getUserMap())
+    utils.emit(socket,curRoomName,'addNewUserclient',curRoomUserList)
+  }) 
+  socket.on('disconnect',async ()=>{//用户断开链接
+    console.log('删除socket',users.getUserMap().get(socket.id))
+    users.deleteUser(socket.id)
+    let curRoomUserList = await utils.getRoomUserList(io,curRoomName,users.getUserMap())
+      // utils.emit(socket,curRoomName,'addNewUserclient',curRoomUserList)//更新用户列表 就不用向这个socket发送 了 因为已经关闭了
+    socket.to(curRoomName).emit('addNewUserclient',curRoomUserList)
+    console.log('当前房间用户列表curRoomUserList',curRoomName,curRoomUserList)
+    if(await utils.isEmptyRoom(io,curRoomName)){////如果当前房间的用户数为 0  那么就删除房间
+      room.removeRoom(curRoomName)
+      console.log('删除',curRoomName)
+    }
+    console.log('chatServer.js getRoomList',room.getRoomList())
+  })
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});

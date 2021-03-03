@@ -20,6 +20,7 @@ class Room {
     }else{//如果roomName不存在 那么就移除失败
       return false
     }
+    console.log('roomList房间列表',this.getRoomList())
   }
   searchRoom(roomName){
     if(this.roomList.includes(roomName)){//如果存在房间 那么就返回真

@@ -1,5 +1,4 @@
-const { timeStamp } = require("console")
-const { userIcon } = require('./constant.js')
+const { userIcon } = require('../utils/constant.js')
 class User{
   constructor(){
     this.userMap = new Map()
@@ -13,7 +12,7 @@ class User{
     this.userMap.set(socketId,new Map())//给当前socket新建一个 map
     this.userMap.get(socketId).set('name',name)//设置当前socket的用户名
     this.userMap.get(socketId).set('userIcon',userIcon[[Math.floor((Math.random()*userIcon.length))]])//设置随机用户头像
-    console.log("this.userMap:",this.userMap)
+    console.log("当前IO所有链接的socketthis.userMap:",this.userMap)
     this.queryUserName(socketId,name)
   }
   queryUserName(socketId,name){

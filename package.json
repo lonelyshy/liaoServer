@@ -4,13 +4,15 @@
   "description": "",
   "main": "Room.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "nodemon ./bin/chatServer.js"
   },
+  "type": "commonjs",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "formidable": "^1.2.2",
     "nodemon": "^2.0.7",
     "socket.io": "^3.1.2"
   }
