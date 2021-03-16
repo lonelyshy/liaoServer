@@ -5,9 +5,9 @@ async function getRoomUserList(io,roomName,userMap){//获取用户名列表
   socketList.forEach(item => {
     curRoomUserList[item] = {
       "userName":userMap.get(item).get('name'),
-      "userIcon":host+"userIcon/"+userMap.get(item).get('userIcon')
+      "userIcon":host+"public/userIcon/"+userMap.get(item).get('userIcon')
       }
-  })
+  })  
   return curRoomUserList
 }
 

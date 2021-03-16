@@ -13,16 +13,17 @@ class User{
     this.userMap.get(socketId).set('name',name)//设置当前socket的用户名
     this.userMap.get(socketId).set('userIcon',userIcon[[Math.floor((Math.random()*userIcon.length))]])//设置随机用户头像
     console.log("当前IO所有链接的socketthis.userMap:",this.userMap)
-    this.queryUserName(socketId,name)
+    // this.queryUserName(name,socketId)
   }
-  queryUserName(socketId,name){
+  queryUserName(name,socketId=''){
     for(let item of this.userMap){
-      console.log(item)
+      console.log("item",item)
       if(item[0] == socketId){
         continue
       }
       if(this.userMap.get(item[0]).get('name') === name){
-        this.userMap.get(item[0]).set('name',name+Math.ceil(Math.random()*100))
+        // this.userMap.get(item[0]).set('name',name+Math.ceil(Math.random()*100))
+        return '重复'
       }
     }
   }

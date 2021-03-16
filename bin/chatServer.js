@@ -1,18 +1,17 @@
-
 const formidable = require('formidable')//上传文件处理模块
-let {app,room} = require('../app.js')
+let {app,room,users} = require('../app.js')
 let http = require('http').Server(app);
 let io = require('socket.io')(http, { cors: true });
 let utils = require('../utils/utils.js')
-let User = require('../class/User.js')
-const users = new User() //用户列表 socketid对应名字
+// let User = require('../class/User.js')
+// const users = new User() //用户列表 socketid对应名字
 io.on('connection', function(socket){
   const curRoomName = socket.request._query.roomName
   socket.join(curRoomName,()=>{//加入房间
     console.log("joinRoom",socket.id,socket.rooms)
   })
   socket.on('sendMessageServer',(data)=>{//有新消息  
-    utils.emit(socket,curRoomName,'sendMessageClient',{socketId:socket.id,msg:data})
+    utils.emit(socket,curRoomName,'sendMessageClient',{socketId:socket.id,data:data})
   })
   socket.on('addNewUserServer',async (user)=>{//有新用户加入
     //如果存在 那么就 命名重复怎么办？暂时名字后面加个数字
