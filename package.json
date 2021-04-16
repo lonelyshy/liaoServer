@@ -4,7 +4,7 @@
   "description": "",
   "main": "Room.js",
   "scripts": {
-    "server": "nodemon ./bin/chatServer.js"
+    "serve": "nodemon ./bin/chatServer.js"
   },
   "type": "commonjs",
   "keywords": [],
