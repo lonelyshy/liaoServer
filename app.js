@@ -8,7 +8,7 @@ const room = new Room()
 let User = require('./class/User.js')
 const users = new User() //用户列表 socketid对应名字
 const multer = require("multer")
-const storage = multer.diskStorage({//设置存储位置和存储的名字
+const storagePic = multer.diskStorage({//设置存储位置和存储的名字
   destination: function (req, file, cb) {
     try{
       fs.mkdirSync(`./public/images/${req.body.roomName}`)
@@ -21,9 +21,9 @@ const storage = multer.diskStorage({//设置存储位置和存储的名字
   cb(null, path.parse(file.originalname).name + '-' + Date.now()+path.parse(file.originalname).ext)
   }
   })
-const upload = multer({ storage: storage })
+const uploadPic = multer({ storage: storagePic })
 
-const singleMidle = upload.single("singleFile");//一次处理一张
+const singleMidlePic = uploadPic.single("singleFile");//一次处理一张
 
 app.use('/public/userIcon',express.static(__dirname + '/public/userIcon'),(req, res, next)=>{//设置静态文件路径，返回图片的路径，设置response的响应透为image/png
   res.header('Content-Type',"image/png")
@@ -42,7 +42,18 @@ app.all('*', function(req, res, next) {
   res.header("Content-Type", "application/json;charset=utf-8");  
   next();  
 }); 
-app.post("/singup", singleMidle, function (req, res) {
+app.post("/uploadPic", singleMidlePic, function (req, res) {
+  res.send({
+    code:0,
+    data:{
+      path:req.file,
+      roomName:req.body.roomName
+    },
+    msg:"文件上传成功"
+  });
+});
+
+app.post("/uploadFiles", singleMidlePic, function (req, res) {
   res.send({
     code:0,
     data:{
