@@ -8,7 +8,7 @@ const room = new Room()
 let User = require('./class/User.js')
 const users = new User() //用户列表 socketid对应名字
 const multer = require("multer")
-const storagePic = multer.diskStorage({//设置存储位置和存储的名字
+const storagePic = multer.diskStorage({//设置图片存储位置和存储的名字
   destination: function (req, file, cb) {
     try{
       fs.mkdirSync(`./public/images/${req.body.roomName}`)
@@ -18,12 +18,30 @@ const storagePic = multer.diskStorage({//设置存储位置和存储的名字
   cb(null, `./public/images/${req.body.roomName}`)//${req.body.roomName}
   },
   filename: function (req, file, cb) {
-  cb(null, path.parse(file.originalname).name + '-' + Date.now()+path.parse(file.originalname).ext)
+  cb(null, path.parse(file.originalname).name +path.parse(file.originalname).ext)
   }
   })
+//设置保存规则
+const storageFile = multer.diskStorage({//设置文件存储位置和存储的名字
+  //destination：字段设置上传路径，可以为函数
+  destination: function (req, file, cb) {
+    try{
+      fs.mkdirSync(`./public/files/${req.body.roomName}`)
+    }catch(err){
+      console.log('路径已经存在')
+    }
+  cb(null, `./public/files/${req.body.roomName}`)//${req.body.roomName}
+  },
+  //filename：设置文件保存的文件名
+  filename: function (req, file, cb) {
+  cb(null, path.parse(file.originalname).name + path.parse(file.originalname).ext)
+  }
+  })
+  
 const uploadPic = multer({ storage: storagePic })
-
-const singleMidlePic = uploadPic.single("singleFile");//一次处理一张
+const uploadFile = multer({ storage: storageFile })
+const singleMidlePic = uploadPic.single("uploadPic");//一次处理一张
+const singleuploadFile = uploadFile.single("uploadFile");//一次处理一张 uploadFile是上传的字段名
 
 app.use('/public/userIcon',express.static(__dirname + '/public/userIcon'),(req, res, next)=>{//设置静态文件路径，返回图片的路径，设置response的响应透为image/png
   res.header('Content-Type',"image/png")
@@ -31,6 +49,10 @@ app.use('/public/userIcon',express.static(__dirname + '/public/userIcon'),(req, 
 })
 app.use('/public/images',express.static(__dirname + '/public/images'),(req, res, next)=>{//设置静态文件路径，返回图片的路径，设置response的响应透为image/png
   res.header('Content-Type',"image/png;image/jpeg")
+  next()
+})
+app.use('/public/files',express.static(__dirname + '/public/files'),(req, res, next)=>{//设置静态文件路径，返回图片的路径，设置response的响应透为image/png
+  res.header('Content-Type',"*")
   next()
 })
 //解决http跨域 并没有解决socket io 跨域
@@ -49,11 +71,11 @@ app.post("/uploadPic", singleMidlePic, function (req, res) {
       path:req.file,
       roomName:req.body.roomName
     },
-    msg:"文件上传成功"
+    msg:"图片上传成功"
   });
 });
 
-app.post("/uploadFiles", singleMidlePic, function (req, res) {
+app.post("/uploadFile", singleuploadFile, function (req, res) {
   res.send({
     code:0,
     data:{
