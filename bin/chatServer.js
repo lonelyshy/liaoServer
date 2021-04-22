@@ -28,8 +28,9 @@ io.on('connection', function(socket){
     socket.to(curRoomName).emit('addNewUserclient',curRoomUserList)
     console.log('当前房间用户列表curRoomUserList',curRoomName,curRoomUserList)
     if(await utils.isEmptyRoom(io,curRoomName)){////如果当前房间的用户数为 0  那么就删除房间
-      room.removeRoom(curRoomName)
+      room.removeRoom(curRoomName)//删除当前房间
       console.log('删除',curRoomName)
+      utils.rmdirSync(curRoomName)//删除当前文件下所有文件
     }
     console.log('chatServer.js getRoomList',room.getRoomList())
   })

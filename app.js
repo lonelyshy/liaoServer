@@ -60,7 +60,7 @@ const singleMidlePic = uploadPic.single("uploadPic");//一次处理一张
 const singleuploadFile = uploadFile.single("uploadFile");//一次处理一张 uploadFile是上传的字段名
 const singleuploadSound = uploadSound.single("uploadSound");//一次处理一张 uploadFile是上传的字段名
 
-app.use('/public/userIcon',express.static(__dirname + '/public/userIcon'),(req, res, next)=>{//设置静态文件路径，返回图片的路径，设置response的响应透为image/png
+app.use('/public/userIcon',express.static(__dirname + '/public/userIcon'),(req, res, next)=>{//设置静态文件路径，返回用户头像的路径，设置response的响应透为image/png
   res.header('Content-Type',"image/png")
   next()
 })
@@ -68,7 +68,7 @@ app.use('/public/images',express.static(__dirname + '/public/images'),(req, res,
   res.header('Content-Type',"image/png;image/jpeg")
   next()
 })
-app.use('/public/files',express.static(__dirname + '/public/files'),(req, res, next)=>{//设置静态文件路径，返回图片的路径，设置response的响应透为image/png
+app.use('/public/files',express.static(__dirname + '/public/files'),(req, res, next)=>{//设置静态文件路径，返回文件的路径，设置response的响应透为image/png
   res.header('Content-Type',"*")
   next()
 })
@@ -85,6 +85,7 @@ app.all('*', function(req, res, next) {
   res.header("Content-Type", "application/json;charset=utf-8");  
   next();  
 }); 
+//监听上传文图片路径
 app.post("/uploadPic", singleMidlePic, function (req, res) {
   res.send({
     code:0,
@@ -95,7 +96,7 @@ app.post("/uploadPic", singleMidlePic, function (req, res) {
     msg:"图片上传成功"
   });
 });
-
+//监听上传文件路径
 app.post("/uploadFile", singleuploadFile, function (req, res) {
   res.send({
     code:0,
@@ -106,7 +107,7 @@ app.post("/uploadFile", singleuploadFile, function (req, res) {
     msg:"文件上传成功"
   });
 });
-
+//监听发送音频路径
 app.post("/uploadSound", singleuploadSound, function (req, res) {
   res.send({
     code:0,
