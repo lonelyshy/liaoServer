@@ -41,7 +41,7 @@ function rmdirSync(path){//删除空房间 及文件 后面优化
           console.log("给定的路径不存在，请给出正确的路径");
         }
       }catch(err){
-        console.log(err)
+        console.log('路径不存在，不删除')
       }
      
     });
@@ -53,7 +53,7 @@ function rmdirSync(path){//删除空房间 及文件 后面优化
           console.log("给定的路径不存在，请给出正确的路径");
         }
       }catch(err){
-        console.log(err)
+        console.log('路径不存在，不删除')
       }
      
     });
@@ -65,7 +65,7 @@ function rmdirSync(path){//删除空房间 及文件 后面优化
           console.log("给定的路径不存在，请给出正确的路径");
         }
       }catch(err){
-        console.log(err)
+        console.log('路径不存在，不删除')
       }
       
     });
