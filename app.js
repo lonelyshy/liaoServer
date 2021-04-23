@@ -30,9 +30,7 @@ const storageFile = multer.diskStorage({//设置文件存储位置和存储的�
     }catch(err){
       console.log('路径已经存在')
     }
-  cb(null, `./public/
-  
-  /${req.body.roomName}`)//${req.body.roomName}
+  cb(null, `./public/files/${req.body.roomName}`)//${req.body.roomName}
   },
   //filename：设置文件保存的文件名
   filename: function (req, file, cb) {
