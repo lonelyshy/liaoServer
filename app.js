@@ -8,6 +8,7 @@ const room = new Room()
 let User = require('./class/User.js')
 const users = new User() //用户列表 socketid对应名字
 const multer = require("multer")
+const { userIcon } = require('./utils/constant.js')
 const storagePic = multer.diskStorage({//设置图片存储位置和存储的名字
   destination: function (req, file, cb) {
     try{
@@ -119,10 +120,7 @@ app.post("/uploadSound", singleuploadSound, function (req, res) {
     msg:"音频上传成功"
   });
 });
-// 监听 默认路径
-app.get('/', function(req, res){
-  res.send('test');
-});
+
 //监听 增加房间
 app.get('/addRoom',function(req,res){
   const roomName = req.query.name
@@ -175,7 +173,17 @@ app.get('/queryUserName',function(req,res){
     })
   }
 })
-
+app.get('/getIconList',function(req,res){
+    res.send({
+      code:0,
+      data:userIcon,
+      msg:"获取iconList成功"
+    })
+})
+// 监听 默认路径
+app.get('/', function(req, res){
+  res.send('test');
+});
 module.exports = {
   app,
   room,

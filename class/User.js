@@ -8,10 +8,10 @@ class User{
     return this.userMap
   }
   //设置用户名
-  setUserName(socketId,name){
+  setUserName(socketId,name,icon){
     this.userMap.set(socketId,new Map())//给当前socket新建一个 map
     this.userMap.get(socketId).set('name',name)//设置当前socket的用户名
-    this.userMap.get(socketId).set('userIcon',userIcon[[Math.floor((Math.random()*userIcon.length))]])//设置随机用户头像
+    this.userMap.get(socketId).set('userIcon',icon)//设置随机用户头像
     console.log("当前IO所有链接的socketthis.userMap:",this.userMap)
     // this.queryUserName(name,socketId)
   }

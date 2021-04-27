@@ -15,7 +15,7 @@ io.on('connection', function(socket){
   })
   socket.on('addNewUserServer',async (user)=>{//有新用户加入
     //如果存在 那么就 命名重复怎么办？暂时名字后面加个数字
-    users.setUserName(socket.id,user.userName)//设置用户名和socketId绑定
+    users.setUserName(socket.id,user.userName,user.userIcon)//设置用户名和socketId绑定
     //获取当前房间的用户名列表
     let curRoomUserList = await utils.getRoomUserList(io,curRoomName,users.getUserMap())
     utils.emit(socket,curRoomName,'addNewUserclient',curRoomUserList)
@@ -27,14 +27,20 @@ io.on('connection', function(socket){
       // utils.emit(socket,curRoomName,'addNewUserclient',curRoomUserList)//更新用户列表 就不用向这个socket发送 了 因为已经关闭了
     socket.to(curRoomName).emit('addNewUserclient',curRoomUserList)
     console.log('当前房间用户列表curRoomUserList',curRoomName,curRoomUserList)
-    if(await utils.isEmptyRoom(io,curRoomName)){////如果当前房间的用户数为 0  那么就删除房间
-      room.removeRoom(curRoomName)//删除当前房间
-      console.log('删除',curRoomName)
-      utils.rmdirSync(curRoomName)//删除当前文件下所有文件
-    }
+  
     console.log('chatServer.js getRoomList',room.getRoomList())
   })
 });
+setInterval(() => {//每分钟查询有没有空房间 有的话那么就删除空房间中的内容
+  room.getRoomList().forEach(async(roomName)=>{
+    if(await utils.isEmptyRoom(io,roomName)){//如果当前房间的用户数为 0  那么就后删除房间
+      room.removeRoom(roomName)//删除当前房间
+      console.log('删除',roomName)
+      utils.rmdirSync(roomName)//删除当前文件下所有文件
+    }
+  })
+
+}, 60000);
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
